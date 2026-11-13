@@ -46,44 +46,39 @@ public class RunMaze
      * Prompts the user for input to make the game interactive. (Dimensions,
      * making sure it’s a valid input, restarting the game)
      */
-    public void promptUser()
-    {
+    public void promptUser() {
         Scanner scanner = new Scanner(System.in);
         display.printsText("====| Maze Wave |====");
         int width = 0;
         int height = 0;
-        while (height <= 3 || width <= 3)
-        {
-            display.printsText("Pick maze width (> 3) :");
-            if (scanner.hasNextInt())
-            {
+        while (height <= 3 || width <= 3 || height > 41 || width > 41) {
+            display.printsText("Pick maze width (4-41) :");
+            if (scanner.hasNextInt()) {
                 width = scanner.nextInt();
-            }
-            else
-            {
+            } else {
                 scanner.next();
             }
-            display.printsText("Pick maze height (> 3) :");
-            if (scanner.hasNextInt())
-            {
+            display.printsText("Pick maze height (4-41) :");
+            if (scanner.hasNextInt()) {
                 height = scanner.nextInt();
-            }
-            else
-            {
+            } else {
                 scanner.next();
             }
-            if (width <= 3 || height <= 3)
-            {
+            if (height <= 3 || width <= 3 || height > 41 || width > 41) {
                 display.printsText("Invalid height/width. Try again.");
             }
         }
         this.maze = new StoreMaze(width, height);
+        this.display.setMaze(maze);
         this.create = new CreateMaze(maze);
-        this.solve = new Solver(maze);
 
         display.printsText("Making the maze...");
         create.generate();
+
+        this.solve = new Solver(maze);
+
         updateDisplay();
+        
         scanner.close();
     }
 
@@ -94,14 +89,14 @@ public class RunMaze
      */
     public void updateDisplay()
     {
-        while (!solve.solved())
+        while (!solve.isFinished())
         {
             solve.move();
             display.clearConsole();
-            display.printMaze(maze.getGrid());
+            display.printMaze();
             try
             {
-                Thread.sleep(50);
+                Thread.sleep(65);
             }
             catch (InterruptedException e)
             {
@@ -110,6 +105,6 @@ public class RunMaze
             }
         }
         display.printsText("Steps taken: " + solve.getMoveCount());
-        display.printsText("Solve time: " + solve.getElapsedTime() + " ns");
+//        display.printsText("Solve time: " + solve.getElapsedTime() + " ms");
     }
 }
