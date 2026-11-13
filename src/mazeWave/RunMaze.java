@@ -49,7 +49,7 @@ public class RunMaze
     public void promptUser()
     {
         Scanner scanner = new Scanner(System.in);
-        display.printsText("Maze Wave");
+        display.printsText("====| Maze Wave |====");
         int width = 0;
         int height = 0;
         while (height <= 3 || width <= 3)
