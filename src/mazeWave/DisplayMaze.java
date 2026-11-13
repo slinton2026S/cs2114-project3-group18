@@ -24,8 +24,17 @@ public class DisplayMaze
         this.maze = maze;
     }
 
-    // ~Public Methods ........................................................
 
+    /**
+     * Updates the maze reference when a new maze is generated.
+     *
+     * @param maze
+     *            The new stored maze.
+     */
+    public void setMaze(StoreMaze maze)
+    {
+        this.maze = maze;
+    }
 
     /**
      * Formats and prints the maze in the console with symbols.
@@ -33,40 +42,58 @@ public class DisplayMaze
      * @param grid
      *            The grid that represents the size of the maze.
      */
-    public void printMaze(int[][] grid)
-    {
-        if (grid == null)
+    public void printMaze() {
+        if (maze == null)
         {
             return;
         }
-        for (int row = 0; row < grid.length; row++)
+
+        int[][] grid = maze.getGrid();
+
+        for (int row = 0; row < maze.getHeight(); row++)
         {
-            for (int col = 0; col < grid[row].length; col++)
+            for (int col = 0; col < maze.getWidth(); col++)
             {
-                String symbol = "";
+                String symbol;
+
                 switch (grid[row][col])
                 {
-                    case 1: // Wall
-                        symbol = "\u2588\u2588";
+                    case StoreMaze.WALL:
+                        symbol = "██";
                         break;
-                    case 0: // Path
+
+                    case StoreMaze.PATH:
                         symbol = "  ";
                         break;
-                    case 2: // Start
+
+                    case StoreMaze.START:
                         symbol = "S ";
                         break;
-                    case 3: // Finish
+
+                    case StoreMaze.FINISH:
                         symbol = "F ";
                         break;
-                    case 4: // Traveled path
-                        symbol = " \u2022";
+
+                    case StoreMaze.VISITED:
+                        symbol = "\u2022 ";
                         break;
-                    default: // Errors
+
+                    case StoreMaze.SOLUTION:
+                        symbol = "░░";
+                        break;
+
+                    case StoreMaze.PLAYER:
+                        symbol = "P ";
+                        break;
+
+                    default:
                         symbol = "??";
                         break;
                 }
-                System.out.print(symbol + " ");
+
+                System.out.print(symbol);
             }
+
             System.out.println();
         }
     }
