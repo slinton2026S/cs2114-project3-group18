@@ -29,21 +29,27 @@ Sophie - Clean up the scanner loop, implement the "play again" option, write mor
 
 ## Attribution
 CreateMaze:
+
 CreateMazeTest:
 
 DisplayMaze: Sophie - I wrote all the methods and reviewed what I wrote after going back and running my code along with asking GenAI for ways of improvement. I also used GenAI to learn more interesting symbols I could make the console display beyond standard keys.
+
 DisplayMazeTest: Sophie - I wrote all the tests in the DisplayMazeTest class. I also went back and added tests for possible exceptions.
 
 Queue:
+
 QueueTest:
 
 RunMaze: Sophie - I wrote all the methods and fields for RunMaze. I figured out how to clear and update the console after each move which is something we previously didn't know how to do. I added in how the console will display things like the statistics for time and steps, and a game title at the top of the display.
+
 RunMazeTest: Sophie - I wrote all the test methods in RunMazeTest. I used GenAI to help me figure out how to test a scanner with user input, since I wasn't sure how to effectively cover those tests completely.
 
 Solver:
+
 SolverTest:
 
 StoreMaze:
+
 StoreMazeTest:
 
 ### GenAI note
