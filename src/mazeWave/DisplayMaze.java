@@ -10,7 +10,7 @@ package mazeWave;
 public class DisplayMaze
 {
     // ~ Fields ................................................................
-
+    private StoreMaze maze;
     // ~ Constructors ..........................................................
 
     /**
@@ -21,7 +21,7 @@ public class DisplayMaze
      */
     public DisplayMaze(StoreMaze maze)
     {
-        //
+        this.maze = maze;
     }
 
     // ~Public Methods ........................................................
@@ -35,7 +35,40 @@ public class DisplayMaze
      */
     public void printMaze(int[][] grid)
     {
-        //
+        if (grid == null)
+        {
+            return;
+        }
+        for (int row = 0; row < grid.length; row++)
+        {
+            for (int col = 0; col < grid[row].length; col++)
+            {
+                String symbol = "";
+                switch (grid[row][col])
+                {
+                    case 1: // Wall
+                        symbol = "\u2588\u2588";
+                        break;
+                    case 0: // Path
+                        symbol = "  ";
+                        break;
+                    case 2: // Start
+                        symbol = "S ";
+                        break;
+                    case 3: // Finish
+                        symbol = "F ";
+                        break;
+                    case 4: // Traveled path
+                        symbol = " \u2022";
+                        break;
+                    default: // Errors
+                        symbol = "??";
+                        break;
+                }
+                System.out.print(symbol + " ");
+            }
+            System.out.println();
+        }
     }
 
 
@@ -48,7 +81,7 @@ public class DisplayMaze
      */
     public void printsText(String text)
     {
-        //
+        System.out.println(text);
     }
 
 
@@ -57,6 +90,9 @@ public class DisplayMaze
      */
     public void clearConsole()
     {
-        //
+        for (int i = 0; i < 50; i++)
+        {
+            System.out.println();
+        }
     }
 }
