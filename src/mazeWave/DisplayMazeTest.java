@@ -45,13 +45,10 @@ public class DisplayMazeTest
     @Test
     public void testPrintMaze()
     {
-        int[][] sampleGrid = { { 1, 1, 1, 1, 1 }, { 1, 2, 0, 3, 1 },
-            { 1, 4, 1, 0, 1 }, { 1, 1, 1, 1, 1 } };
-
         Exception exception = null;
         try
         {
-            displayMaze.printMaze(sampleGrid);
+            displayMaze.printMaze();
         }
         catch (Exception e)
         {
@@ -59,10 +56,11 @@ public class DisplayMazeTest
         }
         assertNull(exception);
 
-        Exception exception2 = null; // Testing null grid
+        DisplayMaze nullDisplay = new DisplayMaze(null);
+        Exception exception2 = null;
         try
         {
-            displayMaze.printMaze(null);
+            nullDisplay.printMaze();
         }
         catch (Exception e)
         {
