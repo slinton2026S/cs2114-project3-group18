@@ -19,13 +19,14 @@ We have not yet implemented things like enabling the user to restart the game on
 To fix possible errors in the scanner that could make the loop close too early, especially when adding the "Play Again" option. We also need to further test and catch errors that would happen in the case of an unsolvable maze. We have not debugged enough to find where these errors occur.
 
 ### Which stretch goals will you attempt?
-We will most likely attempt letting the user edit the maze, and if we have extra time we will attempt letting the user solve the maze.
+We will most likely attempt letting the user solve the maze with some simple challenges, and if we have extra time we will attempt letting the user edit the maze.
 
 ### What new tests will you need?
 We will need to test the restart option and make sure the tests already written for the scanner continue to cover everything after the change. We also need more tests covering invalid inputs like letters or numbers that are too large. We will need to write more boundary tests and tests that confirm our saved data is accurate like elapsed time and total steps. Finally we need to ensure that the grid/maze is displayed properly in console and provides a clean picture for the user.
 
 ### Who does what?
 Sophie - Clean up the scanner loop, implement the "play again" option, write more tests in RunMazeTest for edge cases and other invalid inputs, fix the console display to be more visually appealing for the user.
+Oliver - Move the display to a JFrame object so that user input can be used to control the character and the gameplay can be implemented.
 
 ## Attribution
 CreateMaze:
