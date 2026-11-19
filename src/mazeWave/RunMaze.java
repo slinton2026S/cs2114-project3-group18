@@ -1,110 +1,210 @@
+
 package mazeWave;
 
-import java.util.Scanner;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
-// -------------------------------------------------------------------------
 /**
- * The main class that prompts the user and runs the main maze loop.
- * 
+ * Main class that runs Maze Wave.
+ *
  * @author sjlin
- * @version Nov 12, 2026
+ * @version Nov 19, 2026
  */
-public class RunMaze
-{
-    // ~ Fields ................................................................
+public class RunMaze {
+
     private StoreMaze maze;
+    private StoreMaze solverMaze;
+
     private CreateMaze create;
     private Solver solve;
     private DisplayMaze display;
 
-    // ~ Constructors ..........................................................
+    private int playerX;
+    private int playerY;
+    private int playerMoves;
 
-    /**
-     * Initializes RunMaze application and current session.
-     */
-    public RunMaze()
-    {
-        this.display = new DisplayMaze(maze);
-    }
-    // ~Public Methods ........................................................
+    private boolean playerFinished;
 
+    public RunMaze() {
 
-    /**
-     * Starts the main program.
-     * 
-     * @param args
-     *            The argument to start the application loop.
-     */
-    public static void main(String[] args)
-    {
-        RunMaze game = new RunMaze();
-        game.promptUser();
+        display = new DisplayMaze(maze);
+
+        display.setGenerateAction(this::startMaze);
+        display.setMoveAction(this::movePlayer);
+
+        display.showInputScreen();
     }
 
+    public static void main(String[] args) {
+
+        SwingUtilities.invokeLater(() -> {
+            new RunMaze();
+        });
+    }
 
     /**
-     * Prompts the user for input to make the game interactive. (Dimensions,
-     * making sure it’s a valid input, restarting the game)
+     * Generates a new maze and starts the player phase.
      */
-    public void promptUser() {
-        Scanner scanner = new Scanner(System.in);
-        display.printsText("====| Maze Wave |====");
-        int width = 0;
-        int height = 0;
-        while (height <= 3 || width <= 3 || height > 41 || width > 41) {
-            display.printsText("Pick maze width (4-41) :");
-            if (scanner.hasNextInt()) {
-                width = scanner.nextInt();
-            } else {
-                scanner.next();
-            }
-            display.printsText("Pick maze height (4-41) :");
-            if (scanner.hasNextInt()) {
-                height = scanner.nextInt();
-            } else {
-                scanner.next();
-            }
-            if (height <= 3 || width <= 3 || height > 41 || width > 41) {
-                display.printsText("Invalid height/width. Try again.");
-            }
-        }
-        this.maze = new StoreMaze(width, height);
-        this.display.setMaze(maze);
-        this.create = new CreateMaze(maze);
+    public void startMaze(int width, int height) {
 
-        display.printsText("Making the maze...");
+        maze = new StoreMaze(width, height);
+
+        create = new CreateMaze(maze);
+
+        display.setMaze(maze);
+
+        display.printsText("Generating maze...");
+
         create.generate();
 
-        this.solve = new Solver(maze);
+        // Initialize player at the entrance.
+        int[] start = maze.getStart();
 
-        updateDisplay();
-        
-        scanner.close();
+        playerX = start[0];
+        playerY = start[1];
+
+        playerMoves = 0;
+        playerFinished = false;
+
+        display.setPlayerPosition(playerX, playerY);
+        display.showMazeScreen();
+
+        display.printsText(
+            "Your turn! Use WASD or arrow keys. Moves: 0"
+        );
     }
 
+    /**
+     * Attempts to move the player.
+     *
+     * @param dx horizontal movement
+     * @param dy vertical movement
+     */
+    public void movePlayer(int dx, int dy) {
+
+        if (playerFinished || maze == null) {
+            return;
+        }
+
+        int nextX = playerX + dx;
+        int nextY = playerY + dy;
+
+        // Check boundaries.
+        if (!maze.inBounds(nextX, nextY)) {
+            return;
+        }
+
+        // Prevent walking through walls.
+        if (maze.getCell(nextX, nextY) == StoreMaze.WALL) {
+            return;
+        }
+
+        // Update player position.
+        playerX = nextX;
+        playerY = nextY;
+
+        playerMoves++;
+
+        display.setPlayerPosition(playerX, playerY);
+
+        display.printsText(
+            "Your turn! Moves: " + playerMoves
+        );
+
+        // Check whether the player reached the finish.
+        int[] finish = maze.getFinish();
+
+        if (playerX == finish[0] && playerY == finish[1]) {
+
+            playerFinished = true;
+
+            display.printsText(
+                "Maze completed! Your moves: " + playerMoves
+                + " | Now watching BFS..."
+            );
+
+            startSolver();
+        }
+    }
 
     /**
-     * Loops through moving through the maze and calls printMaze after each move
-     * to update the console.
+     * Starts the BFS solver on a separate copy of the maze.
      */
-    public void updateDisplay()
-    {
-        while (!solve.isFinished())
-        {
-            solve.move();
-            display.clearConsole();
+    private void startSolver() {
+
+        // Preserve the original maze and create a clean copy.
+        solverMaze = maze.copy();
+
+        display.setPlayerPosition(-1, -1);
+        display.setMaze(solverMaze);
+
+        solve = new Solver(solverMaze);
+
+        Timer timer = new Timer(8, e -> {
+
+            boolean continuing = solve.move();
+
             display.printMaze();
-            try
-            {
-                Thread.sleep(65);
+
+            if (!continuing) {
+
+                ((Timer) e.getSource()).stop();
+
+                if (solve.solved()) {
+                    showResults();
+                }
+                else {
+                    display.printsText(
+                        "BFS could not find a solution."
+                    );
+                }
             }
-            catch (InterruptedException e)
-            {
-                Thread.currentThread().interrupt();
-                break;
-            }
+        });
+
+        timer.start();
+    }
+
+    /**
+     * Compares the player's result with the optimal BFS result.
+     */
+    private void showResults() {
+
+        int optimalMoves = solve.getMoveCount();
+
+        double efficiency = playerMoves == 0
+            ? 0.0
+            : (double) optimalMoves / playerMoves * 100.0;
+
+        int extraMoves = playerMoves - optimalMoves;
+
+        String rating;
+
+        if (extraMoves == 0) {
+            rating = "Perfect! You found the optimal path!";
         }
-        display.printsText("Steps taken: " + solve.getMoveCount());
-//        display.printsText("Solve time: " + solve.getElapsedTime() + " ms");
+        else if (efficiency >= 90) {
+            rating = "Excellent!";
+        }
+        else if (efficiency >= 75) {
+            rating = "Great job!";
+        }
+        else if (efficiency >= 50) {
+            rating = "Not bad!";
+        }
+        else {
+            rating = "There's room for improvement!";
+        }
+
+        display.printsText(
+            String.format(
+                "%s Player: %d | Optimal: %d | Extra: %d | Efficiency: %.1f%%",
+                rating,
+                playerMoves,
+                optimalMoves,
+                extraMoves,
+                efficiency
+            )
+        );
+        display.showPlayAgainButton();
     }
 }
