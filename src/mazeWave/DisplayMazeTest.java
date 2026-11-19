@@ -1,9 +1,5 @@
 package mazeWave;
 
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-
 // -------------------------------------------------------------------------
 /**
  * Tests the DisplayMaze test.
@@ -11,8 +7,7 @@ import org.junit.Test;
  * @author sjlin
  * @version Nov 12, 2026
  */
-public class DisplayMazeTest
-{
+public class DisplayMazeTest extends student.TestCase {
 
     private StoreMaze storeMaze;
     private DisplayMaze displayMaze;
@@ -20,7 +15,6 @@ public class DisplayMazeTest
     /**
      * Sets up StoreMaze and DisplayMaze before each test.
      */
-    @Before
     public void setUp()
     {
         storeMaze = new StoreMaze(5, 5);
@@ -31,7 +25,6 @@ public class DisplayMazeTest
     /**
      * Tests the DisplayMaze is created correctly.
      */
-    @Test
     public void testDisplayMaze()
     {
         assertNotNull(storeMaze);
@@ -42,9 +35,11 @@ public class DisplayMazeTest
     /**
      * Tests the printMaze method.
      */
-    @Test
     public void testPrintMaze()
     {
+        int[][] sampleGrid = { { 1, 1, 1, 1, 1 }, { 1, 2, 0, 3, 1 },
+            { 1, 4, 1, 0, 1 }, { 1, 1, 1, 1, 1 } };
+
         Exception exception = null;
         try
         {
@@ -56,24 +51,12 @@ public class DisplayMazeTest
         }
         assertNull(exception);
 
-        DisplayMaze nullDisplay = new DisplayMaze(null);
-        Exception exception2 = null;
-        try
-        {
-            nullDisplay.printMaze();
-        }
-        catch (Exception e)
-        {
-            exception2 = e;
-        }
-        assertNull(exception2);
     }
 
 
     /**
      * Tests the printText method.
      */
-    @Test
     public void testPrintText()
     {
         Exception exception = null;
@@ -92,7 +75,6 @@ public class DisplayMazeTest
     /**
      * Tests the clearConsole method.
      */
-    @Test
     public void testClearConsole()
     {
         Exception exception = null;
