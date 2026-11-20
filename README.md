@@ -2,56 +2,57 @@
 A maze solver that creates a maze and solves it efficiently.
 
 ## Reflection
-### What changed from your specification?
-The spec planned for the display to only update after it was solved, but we changed it to update after every move to have a more animated look. We also changed the symbols that would be used to display the maze in the console after finding a more interesting way to display the maze. The possible dimensions of the maze were changed to be anything above 3.
+### How did your design absorb the change?
+When implementing the Jframe, we had to edit the DisplayMaze and RunMaze class the most. Everything we had done previously with scanner was changed to Jframe, so we had to make sure all the other classes were calling the updated methods instead of the old ones that didn't exist anymore. The DisplayMazeTest and RunMazeTest classes also changed since we had to test aspects of a Jframe instead of console outputs.
 
-### Did the model really stand alone?
-The model classes StoreMaze, CreateMaze, and Solver are independent from the Display class. The model classes do not call the display, they just use the stored information from the grid.
+### Did the change cross the model/view line?
+The model/view line was still not crossed as DisplayMaze contrinues to only handle graphics and StoreMaze holds all the information for the maze. The view had to learn the updated way we stored it as a Jframe, along player positioning (playerX and playerY). It also had to learn how to form the display with the new methods like showInputScreen, showMazeScreen, and showPlayAgainButton. The changes did not ripple through places it was not supposed to.
 
-### What happened to your unknowns?
-We learned how to create what appears as an animation using a while loop and pausing the code so it updates a slower frame rate. We also learned how to clear the console just by using a large loop that consistently prints empty lines to reset the console more cleanly.
+### What changed from your D3 plan?
+The most major change from our D3 plan was implementing the Jframe. We used to have it run based on a scanner in DisplayMaze that ran on System.in and System.out. Now, DisplayMaze uses grid rendering with MazePanel, and can change the current screen view depending on the player's progress in the came with showInputScreen, showMazeScreen, and showPlayAgainButton. We also implement keybinds to move around the maze, instead of having to type inputs which would have only worked with the scanner. We also had to remove methods like promptUser() and updateDisplay() as they no longer served a purpose with the Jframe implementation. We had to change the way we handle bad inputs since it was previously evaluated inside the scanner when the user provided input through promptUser(). It is now handled directly in DisplayMaze with text fields. We had to heavily change the tests in DisplayMazeTest and RunMazeTests by adding things like testMazePanel to test the graphics of the Jframe.
 
 ### What doesn't work yet?
-We have not yet implemented things like enabling the user to restart the game once it finishes. This would require us to change the way the scanner works within the loop. We also have not worked to implement the stretch goal of allowing the user to personally edit the maze/ solve the maze themselves.
+While our gameplay itself works well, we definitely need to cover more testing that focus on edge cases and bad inputs. We would specifically need to tests if callbacks are triggered and assert they are equal to 0 through the tests, while inputting both valid and invalid heights and widths with widthField.setText() and heighField.setText() methods.
 
 ## Next Steps
-### What is left to finish the MVP?
-To fix possible errors in the scanner that could make the loop close too early, especially when adding the "Play Again" option. We also need to further test and catch errors that would happen in the case of an unsolvable maze. We have not debugged enough to find where these errors occur.
+### What is left for the final build?
+For the final build can attempt to implement things like enemies into our gameplay. They could move around the maze and make it harder for the player to reach the finish. Besides that, we really only have to finish up testing.
 
-### Which stretch goals will you attempt?
-We will most likely attempt letting the user solve the maze with some simple challenges, and if we have extra time we will attempt letting the user edit the maze.
+### Which stretch goals are you committing to, and which are you dropping?
+We have committed to allowing the user to solve the maze and having the computer judge the path they chose with stats and efficiency. We also committed to implementing the Jframe instead of the console visual.
 
-### What new tests will you need?
-We will need to test the restart option and make sure the tests already written for the scanner continue to cover everything after the change. We also need more tests covering invalid inputs like letters or numbers that are too large. We will need to write more boundary tests and tests that confirm our saved data is accurate like elapsed time and total steps. Finally we need to ensure that the grid/maze is displayed properly in console and provides a clean picture for the user.
+### What will your 3-minute demo show?
+Our three minute demo will include starting the program, inputting the height and width through the display, then clicking generate maze. Then we will solve the maze and show how the computer checks our efficiency also outputting stats in the display. We will then show how the play again button works and create a maze of completely different dimensions. We can show taking wrong turns in the maze, taking the most efficient path versus the longest path, and also showing bad inputs for inputting maze dimensions.
 
 ### Who does what?
-Sophie - Clean up the scanner loop, implement the "play again" option, write more tests in RunMazeTest for edge cases and other invalid inputs, fix the console display to be more visually appealing for the user.
-Oliver - Move the display to a JFrame object so that user input can be used to control the character and the gameplay can be implemented.
+We can both help with all but mainly in charge of...
+Oliver - Possibly adding enemies
+Sophie - Fixing testing
 
 ## Attribution
-CreateMaze:
+CreateMaze: Oliver -
 
-CreateMazeTest:
+CreateMazeTest: Oliver -
 
 DisplayMaze: Sophie - I wrote all the methods and reviewed what I wrote after going back and running my code along with asking GenAI for ways of improvement. I also used GenAI to learn more interesting symbols I could make the console display beyond standard keys.
 
 DisplayMazeTest: Sophie - I wrote all the tests in the DisplayMazeTest class. I also went back and added tests for possible exceptions.
 
-Queue:
+Queue: Oliver - 
 
-QueueTest:
+QueueTest: Oliver -
 
 RunMaze: Sophie - I wrote all the methods and fields for RunMaze. I figured out how to clear and update the console after each move which is something we previously didn't know how to do. I added in how the console will display things like the statistics for time and steps, and a game title at the top of the display.
 
-RunMazeTest: Sophie - I wrote all the test methods in RunMazeTest. I used GenAI to help me figure out how to test a scanner with user input, since I wasn't sure how to effectively cover those tests completely.
+RunMazeTest: Sophie - I wrote all the test methods in RunMazeTest. I used GenAI to help me figure out how to test a scanner with user input, since I wasn't sure how to effectively cover those tests completely. I updated the tests to cover the new methods after implementing the Jframe.
 
-Solver:
+Solver: Oliver - 
 
-SolverTest:
+SolverTest: Oliver -
 
-StoreMaze:
+StoreMaze: Oliver
 
-StoreMazeTest:
+StoreMazeTest: Oliver -
 
 ### GenAI note
 GenAI was used to assist with things we didn't know like how to test certain methods, improving method design, and discovering a better way to display our idea for the maze in the console.
