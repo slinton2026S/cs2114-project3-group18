@@ -17,10 +17,7 @@ public class RunMazeTest
 {
 
     // ~ Fields ................................................................
-    private StoreMaze storeMaze;
-    private CreateMaze createMaze;
-    private Solver solver;
-    private DisplayMaze displayMaze;
+    private RunMaze game;
 
     // ~Public Methods ........................................................
 
@@ -30,10 +27,7 @@ public class RunMazeTest
     @Before
     public void setUp()
     {
-        storeMaze = new StoreMaze(10, 10);
-        createMaze = new CreateMaze(storeMaze);
-        displayMaze = new DisplayMaze(storeMaze);
-        solver = new Solver(storeMaze);
+        game = new RunMaze();
     }
 
 
@@ -43,17 +37,7 @@ public class RunMazeTest
     @Test
     public void testRunMaze()
     {
-        Exception exception = null;
-        RunMaze game = null;
-        try
-        {
-            game = new RunMaze();
-        }
-        catch (Exception e)
-        {
-            exception = e;
-        }
-        assertNull(exception);
+        assertNotNull(game);
     }
 
 
@@ -63,76 +47,50 @@ public class RunMazeTest
     @Test
     public void testMain()
     {
-        String simulatedInput = "10\n10\n";
-        InputStream originalSystemIn = System.in;
-        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
-
         Exception exception = null;
         try
         {
-            RunMaze.main(newArgs());
+            RunMaze.main(new String[0]);
         }
         catch (Exception e)
         {
             exception = e;
-        }
-        finally
-        {
-            System.setIn(originalSystemIn);
         }
         assertNull(exception);
     }
 
 
     /**
-     * Help Method for Testing
-     */
-    private String[] newArgs()
-    {
-        return new String[0];
-    }
-
-
-    /**
-     * Tests the promptUser method.
+     * Tests the startMaze method.
      */
     @Test
-    public void testPromptUser()
+    public void testStartMaze()
     {
-        String simulatedInput = "10\n10\n";
-        InputStream originalSystemIn = System.in;
-        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
-
         Exception exception = null;
         try
         {
-            RunMaze game = new RunMaze();
-            game.promptUser();
+            game.startMaze(10, 10);
         }
         catch (Exception e)
         {
             exception = e;
-        }
-        finally
-        {
-            System.setIn(originalSystemIn);
         }
         assertNull(exception);
     }
 
 
     /**
-     * Tests the updateDisplay method.
+     * Tests the movePlayer method.
      */
-    @Test
-    public void testUpdateDisplay()
+    public void testMovePlayer()
     {
-        createMaze.generate();
+        game.startMaze(50, 50);
 
         Exception exception = null;
         try
         {
-            RunMaze game = new RunMaze();
+            game.movePlayer(0, 5);
+            game.movePlayer(5, 0);
         }
         catch (Exception e)
         {

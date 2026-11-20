@@ -16,25 +16,29 @@ import javax.swing.*;
  * @author sjlin
  * @version Nov 18, 2026
  */
-public class DisplayMaze {
+public class DisplayMaze
+{
 
     private volatile StoreMaze maze;
 
     private JFrame frame;
-    private MazePanel mazePanel;
+    MazePanel mazePanel;
     private JLabel statusLabel;
     private JTextField widthField;
     private JTextField heightField;
     private JButton generateButton;
-    
 
     /**
      * Initializes the maze window.
      *
-     * @param maze the current maze
+     * @param maze
+     *            the current maze
      */
-    public DisplayMaze(StoreMaze maze) {
+    public DisplayMaze(StoreMaze maze)
+    {
         this.maze = maze;
+        mazePanel = new MazePanel();
+        statusLabel = new JLabel("Maze Wave");
 
         SwingUtilities.invokeLater(() -> {
             frame = new JFrame("Maze Wave");
@@ -53,37 +57,42 @@ public class DisplayMaze {
             frame.setVisible(true);
         });
     }
-    
-    
-    
+
     private BiConsumer<Integer, Integer> generateAction;
     private BiConsumer<Integer, Integer> moveAction;
     private int playerX = -1;
     private int playerY = -1;
-    
+
     // ----------------------------------------------------------
     /**
      * set generate action
-     * @param action the action
+     * 
+     * @param action
+     *            the action
      */
-    public void setGenerateAction(
-        BiConsumer<Integer, Integer> action) {
+    public void setGenerateAction(BiConsumer<Integer, Integer> action)
+    {
         this.generateAction = action;
     }
-    
-    public void setMoveAction(
-        BiConsumer<Integer, Integer> action) {
+
+
+    public void setMoveAction(BiConsumer<Integer, Integer> action)
+    {
 
         this.moveAction = action;
     }
-    
-    public void setPlayerPosition(int x, int y) {
+
+
+    public void setPlayerPosition(int x, int y)
+    {
         this.playerX = x;
         this.playerY = y;
         printMaze();
     }
-    
-    public void showInputScreen() {
+
+
+    public void showInputScreen()
+    {
         SwingUtilities.invokeLater(() -> {
 
             JPanel inputPanel = new JPanel();
@@ -101,30 +110,31 @@ public class DisplayMaze {
             generateButton = new JButton("Generate Maze");
 
             generateButton.addActionListener(e -> {
-                try {
+                try
+                {
                     int width = Integer.parseInt(widthField.getText());
                     int height = Integer.parseInt(heightField.getText());
 
-                    if (width < 5 || width > 100 ||
-                        height < 5 || height > 100) {
+                    if (width < 5 || width > 100 || height < 5 || height > 100)
+                    {
 
                         JOptionPane.showMessageDialog(
                             frame,
-                            "Width and height must be between 5 and 100."
-                        );
+                            "Width and height must be between 5 and 100.");
                         return;
                     }
 
-                    if (generateAction != null) {
+                    if (generateAction != null)
+                    {
                         generateAction.accept(width, height);
                     }
 
                 }
-                catch (NumberFormatException ex) {
+                catch (NumberFormatException ex)
+                {
                     JOptionPane.showMessageDialog(
                         frame,
-                        "Please enter valid integers."
-                    );
+                        "Please enter valid integers.");
                 }
             });
 
@@ -136,8 +146,10 @@ public class DisplayMaze {
             frame.repaint();
         });
     }
-    
-    public void showMazeScreen() {
+
+
+    public void showMazeScreen()
+    {
         SwingUtilities.invokeLater(() -> {
             frame.getContentPane().removeAll();
 
@@ -148,8 +160,10 @@ public class DisplayMaze {
             frame.repaint();
         });
     }
-    
-    public void showPlayAgainButton() {
+
+
+    public void showPlayAgainButton()
+    {
 
         SwingUtilities.invokeLater(() -> {
 
@@ -172,58 +186,72 @@ public class DisplayMaze {
         });
     }
 
+
     /**
      * Updates the current maze.
      *
-     * @param maze the new maze
+     * @param maze
+     *            the new maze
      */
-    public void setMaze(StoreMaze maze) {
+    public void setMaze(StoreMaze maze)
+    {
         this.maze = maze;
 
-        if (mazePanel != null) {
+        if (mazePanel != null)
+        {
             mazePanel.repaint();
         }
     }
+
 
     /**
      * Refreshes the maze display.
      */
-    public void printMaze() {
-        if (mazePanel != null) {
+    public void printMaze()
+    {
+        if (mazePanel != null)
+        {
             mazePanel.repaint();
         }
     }
 
+
     /**
      * Updates the status text at the bottom of the window.
      *
-     * @param text the text to display
+     * @param text
+     *            the text to display
      */
-    public void printsText(String text) {
+    public void printsText(String text)
+    {
         SwingUtilities.invokeLater(() -> {
-            if (statusLabel != null) {
+            if (statusLabel != null)
+            {
                 statusLabel.setText(text);
             }
         });
     }
 
+
     /**
      * No longer needed for a graphical display.
      */
-    public void clearConsole() {
+    public void clearConsole()
+    {
         // Nothing to clear in a JFrame.
     }
-    
-    
 
     /**
      * Custom JPanel responsible for drawing the maze.
      */
-    private class MazePanel extends JPanel {
+    class MazePanel
+        extends JPanel
+    {
 
         private static final int PADDING = 20;
-        
-        public MazePanel() {
+
+        public MazePanel()
+        {
 
             setFocusable(true);
 
@@ -237,33 +265,38 @@ public class DisplayMaze {
             addKeyBinding("A", -1, 0);
             addKeyBinding("D", 1, 0);
         }
-        
-        private void addKeyBinding(
-            String key, int dx, int dy) {
 
-            getInputMap(WHEN_IN_FOCUSED_WINDOW).put(
-                KeyStroke.getKeyStroke(key), key
-            );
+
+        private void addKeyBinding(String key, int dx, int dy)
+        {
+
+            getInputMap(WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(key), key);
 
             getActionMap().put(key, new AbstractAction() {
 
                 @Override
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(ActionEvent e)
+                {
 
-                    if (moveAction != null) {
+                    if (moveAction != null)
+                    {
                         moveAction.accept(dx, dy);
                     }
                 }
             });
         }
 
+
         @Override
-        protected void paintComponent(Graphics g) {
+        protected void paintComponent(Graphics g)
+        {
             super.paintComponent(g);
 
             StoreMaze currentMaze = maze;
 
-            if (currentMaze == null) {
+            if (currentMaze == null)
+            {
                 return;
             }
 
@@ -272,11 +305,12 @@ public class DisplayMaze {
             int rows = currentMaze.getHeight();
             int cols = currentMaze.getWidth();
 
-            if (rows == 0 || cols == 0) {
+            if (rows == 0 || cols == 0)
+            {
                 return;
             }
 
-            Graphics2D g2 = (Graphics2D) g.create();
+            Graphics2D g2 = (Graphics2D)g.create();
 
             // Calculate cell size based on available window space.
             int cellWidth = (getWidth() - PADDING * 2) / cols;
@@ -291,12 +325,15 @@ public class DisplayMaze {
             int offsetX = (getWidth() - mazeWidth) / 2;
             int offsetY = (getHeight() - mazeHeight) / 2;
 
-            for (int row = 0; row < rows; row++) {
-                for (int col = 0; col < cols; col++) {
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < cols; col++)
+                {
 
                     Color color;
 
-                    switch (grid[row][col]) {
+                    switch (grid[row][col])
+                    {
 
                         case StoreMaze.WALL:
                             color = Color.DARK_GRAY;
@@ -338,15 +375,17 @@ public class DisplayMaze {
                     g2.fillRect(x, y, cellSize, cellSize);
 
                     // Subtle grid lines.
-                    if (cellSize >= 5) {
+                    if (cellSize >= 5)
+                    {
                         g2.setColor(new Color(220, 220, 220));
                         g2.drawRect(x, y, cellSize, cellSize);
                     }
                 }
             }
-            
+
             // Draw the player on top of the maze.
-            if (playerX >= 0 && playerY >= 0) {
+            if (playerX >= 0 && playerY >= 0)
+            {
 
                 int x = offsetX + playerX * cellSize;
                 int y = offsetY + playerY * cellSize;
@@ -359,8 +398,7 @@ public class DisplayMaze {
                     x + inset,
                     y + inset,
                     cellSize - inset * 2,
-                    cellSize - inset * 2
-                );
+                    cellSize - inset * 2);
             }
 
             g2.dispose();
